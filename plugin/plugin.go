@@ -29,7 +29,7 @@ type MultiTenancy struct {
 	dataIsolation map[string]Model
 }
 
-func Instance(connConf any) *MultiTenancy {
+func Instance() *MultiTenancy {
 	if _MTPlugin == nil {
 		once.Do(func() {
 			_MTPlugin = &MultiTenancy{}
