@@ -124,7 +124,7 @@ func (mt *MultiTenancy) getAndSwitchDBConnPool(db *gorm.DB, tenantId string) {
 
 	_, ok := mt.dbMap[tenantId]
 	if !ok {
-		conn, errDB := mt.tConn.CreateDBConn(tenantId, mt.connConf)
+		conn, errDB := mt.tConn.CreateDBConn(tenantId)
 		if errDB != nil {
 			db.Error = mt.newError(errDB.Error())
 			return

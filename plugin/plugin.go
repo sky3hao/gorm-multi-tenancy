@@ -11,7 +11,7 @@ const (
 )
 
 type TenantDBConn interface {
-	CreateDBConn(tenant string, conf any) (db *gorm.DB, err error)
+	CreateDBConn(tenant string) (db *gorm.DB, err error)
 }
 
 var (
@@ -27,15 +27,12 @@ type MultiTenancy struct {
 	dbMap         map[string]*gorm.DB
 	tableMap      map[string]map[string]struct{}
 	dataIsolation map[string]Model
-	connConf      any
 }
 
 func Instance(connConf any) *MultiTenancy {
 	if _MTPlugin == nil {
 		once.Do(func() {
-			_MTPlugin = &MultiTenancy{
-				connConf: connConf,
-			}
+			_MTPlugin = &MultiTenancy{}
 		})
 	}
 	return _MTPlugin
@@ -55,7 +52,7 @@ func (mt *MultiTenancy) Register(tenantTag string, conn TenantDBConn) *MultiTena
 	mt.dbMap = make(map[string]*gorm.DB)
 	mt.tConn = conn
 	mt.tenantTag = tenantTag
-	
+
 	_MTPlugin = mt
 	return mt
 }
@@ -75,7 +72,7 @@ func (mt *MultiTenancy) GetDBByTenantId(tenantId string) (db *gorm.DB, err error
 	var ok bool
 	db, ok = mt.dbMap[tenantId]
 	if !ok {
-		conn, errDB := mt.tConn.CreateDBConn(tenantId, mt.connConf)
+		conn, errDB := mt.tConn.CreateDBConn(tenantId)
 		if errDB != nil {
 			db.Error = mt.newError(errDB.Error())
 			return
