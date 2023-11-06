@@ -188,7 +188,7 @@ func (mt *MultiTenancy) getTenantIdByModel(db *gorm.DB) (tenantId string) {
 						return
 					}
 					if tenantId != "" && tenantIdi != tenantId {
-						db.Error = mt.newError("batch inserts to different databases are not supported\n")
+						db.Error = mt.newError("batch inserts to different databases are not supported")
 						return
 					}
 					tenantId = tenantIdi

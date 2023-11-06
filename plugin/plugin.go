@@ -20,8 +20,9 @@ var (
 )
 
 type MultiTenancy struct {
-	tConn TenantDBConn
 	*gorm.DB
+
+	tConn         TenantDBConn
 	tenantTag     string
 	dbMap         map[string]*gorm.DB
 	tableMap      map[string]map[string]struct{}
@@ -54,6 +55,7 @@ func (mt *MultiTenancy) Register(tenantTag string, conn TenantDBConn) *MultiTena
 	mt.dbMap = make(map[string]*gorm.DB)
 	mt.tConn = conn
 	mt.tenantTag = tenantTag
+	
 	_MTPlugin = mt
 	return mt
 }
