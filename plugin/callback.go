@@ -178,7 +178,7 @@ func (mt *MultiTenancy) getTenantIdByModel(db *gorm.DB) (tenantId string) {
 			case reflect.Slice, reflect.Array:
 				var tenantIdi string
 				for i := 0; i < db.Statement.ReflectValue.Len(); i++ {
-					fieldValue, isZero := field.ValueOf(db.Statement.Context, db.Statement.ReflectValue.Index(i))
+					fieldValue, isZero := field.ValueOf(db.Statement.ReflectValue.Index(i))
 					if isZero {
 						continue
 					}
@@ -195,7 +195,7 @@ func (mt *MultiTenancy) getTenantIdByModel(db *gorm.DB) (tenantId string) {
 				}
 				return
 			case reflect.Struct:
-				fieldValue, isZero := field.ValueOf(db.Statement.Context, db.Statement.ReflectValue)
+				fieldValue, isZero := field.ValueOf(db.Statement.ReflectValue)
 				if isZero {
 					return
 				}
