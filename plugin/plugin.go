@@ -1,13 +1,11 @@
 package plugin
 
 import (
+	"errors"
+	"fmt"
 	"sync"
 
 	"gorm.io/gorm"
-)
-
-const (
-	defaultTenantTag = "tenant_id"
 )
 
 type TenantDBConn interface {
@@ -22,11 +20,10 @@ var (
 type MultiTenancy struct {
 	*gorm.DB
 
-	tConn         TenantDBConn
-	tenantTag     string
-	dbMap         map[string]*gorm.DB
-	tableMap      map[string]map[string]struct{}
-	dataIsolation map[string]Model
+	tConn     TenantDBConn
+	tenantTag string
+	dbMap     map[string]*gorm.DB
+	tableMap  map[string]map[string]struct{}
 }
 
 func Instance() *MultiTenancy {
@@ -44,7 +41,6 @@ func (mt *MultiTenancy) Name() string {
 
 func (mt *MultiTenancy) Initialize(db *gorm.DB) error {
 	mt.DB = db
-	mt.registerCallbacks(db)
 	return nil
 }
 
@@ -83,9 +79,6 @@ func (mt *MultiTenancy) GetDBByTenantId(tenantId string) (db *gorm.DB, err error
 	return
 }
 
-func (mt *MultiTenancy) getTenantTag() string {
-	if mt.tenantTag != "" {
-		return mt.tenantTag
-	}
-	return defaultTenantTag
+func (mt *MultiTenancy) newError(errorStr string) (err error) {
+	return errors.New(fmt.Sprintf("【gorm:multi-tenancy】%s", errorStr))
 }
