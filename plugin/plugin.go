@@ -70,8 +70,8 @@ func (mt *MultiTenancy) GetDBByTenantId(tenantId string) (db *gorm.DB, err error
 	if !ok {
 		conn, errDB := mt.tConn.CreateDBConn(tenantId)
 		if errDB != nil {
-			db.Error = mt.newError(errDB.Error())
-			return db, errDB
+			//db.Error = mt.newError(errDB.Error())
+			return db, mt.newError(errDB.Error())
 		}
 		mt.dbMap[tenantId] = conn
 		db = conn
